@@ -1,20 +1,150 @@
-{"fsd4vervbdf43": [
+{"1": [
     {
         "id": "1",
         "question": "Qual o local em que esles estão conversando?",
         "options": ["Praia", "Floresta", "Biblioteca", "Cidade"],
-        "answer": "C"
+        "answer": "C",
+        "tags": ["local", "conversa"]
     },
     {
         "id": "2",
         "question": "Qual o sentimento que o homem está expressando?",
         "options": ["Felicidade", "Tristeza", "Raiva", "Vergonha"],
-        "answer": "D"
+        "answer": "D",
+        "tags": ["local", "conversa"]
     },
     {
         "id": "3",
         "question": "Qual o tipo de relação entre os dois?",
         "options": ["amigos", "namorados", "desconhecidos", "colegas de trabalho"],
-        "answer": "C"
+        "answer": "C",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "4",
+        "question": "O que a garota do video está demonstrando?",
+        "options": ["alegria", "neutralidade", "desconforto", "entusiasmo"],
+        "answer": "C",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "5",
+        "question": "Qual a intenção por tras da interação do rapaz em se aproximar da garota?",
+        "options": ["ele está tentando flertar com ela", "ele está querendo tirar duvidadas de uma materia", "ele é um amigo dela", "ele está tentando pedir um favor para ela"],
+        "answer": "A",
+        "tags": ["local", "conversa"]
     }
-]}
+],
+"2": [
+    {
+        "id": "1",
+        "question": "Qual emoção predomina no incio da interação?",
+        "options": ["raiva", "nojo", "empatia", "tristeza"],
+        "answer": "C",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "2",
+        "question": "Poque o rapaz pede para uma desconhecida anotar o numero?",
+        "options": ["Por que na rua ele não tinha acesso a papel", "Por que ele estava sem telefone", "Por que ele queria que ela pegasse o numero dele", "Por que ele estava perdido"],
+        "answer": "C",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "3",
+        "question": "Como podemos melhor caracterizar a atitude inicial da mulher?",
+        "options": ["solidaria", "desconfiada", "temerosa", "amorosa"],
+        "answer": "A",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "4",
+        "question": "Qual emoção predomina o fim da interação?",
+        "options": ["nojo", "raiva", "empatia", "tristeza"],
+        "answer": "B",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "5",
+        "question": "Qual a expectativa da mulher ao ajudar o homem?",
+        "options": ["que ele registrasse o telefone de outra pessoa", "que ele a ligasse", "que ele a chamasse para sair", "que ele a ajudasse financeiramente"],
+        "answer": "A",
+        "tags": ["local", "conversa"]
+    }
+    
+],
+"3": [
+    {
+        "id": "1",
+        "question": "Qual a principal expressão do homem de roupa branca?",
+        "options": ["Surpresa", "Tristeza", "Raiva", "Decepção"],
+        "answer": "A",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "2",
+        "question": "Qual a relação entre os integrantes?",
+        "options": ["Professor e aluno", "Medico e paciente", "Desconhecidos", "Chefe e empregado"],
+        "answer": "B",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "3",
+        "question": "Em qual contexto se da a interação?",
+        "options": ["consulta medica", "entrevista de emprego", "trabalho escolar", "encontro causal"],
+        "answer": "A",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "4",
+        "question": "Qual a expectativa do homem de verde com a interação?",
+        "options": ["Receber uma proposta de emprego", "Fazer um exame de rotina", "Ser um pai mais presente", "receber o diagnostico de TDAH"], 
+        "answer": "D",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "5",
+        "question": "De que maneira a interação se encerra?",
+        "options": ["De maneira satisfatoria para ambas a as partes", "Uma das partes finaliza frustrada", "ambos saem frustrados", "ambos aparentam indiferença"],
+        "answer": "A",
+        "tags": ["local", "conversa"]
+    }
+], 
+"4": [
+    {
+        "id": "1",
+        "question": "Qual a relação entre os integrantes do video?",
+        "options": ["Adversarios", "Pessoas desconhecidas", "Amigos", "Familiares"],
+        "answer": "A",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "2",
+        "question": "Em que contexto se da a interação?",
+        "options": ["Conversa", "Discussão", "Disputa esportiva", "Atividade fisica"],
+        "answer": "C",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "3",
+        "question": "Quais as expectativas dos integrantes?",
+        "options": ["Fazer uma boa apresentação", "ganhar a disputa", "não machucar seu oponente", "se divertir"],
+        "answer": "B",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "4",
+        "question": "Qual a função da pessoa vestida de preto na cena?",
+        "options": ["Um lutador", "Um arbitro", "Um artista", "Um medico"], 
+        "answer": "B",
+        "tags": ["local", "conversa"]
+    },
+    {
+        "id": "5",
+        "question": "Qual a emoção predominante da plateia?",
+        "options": ["entusiasmo", "preocupação", "decepção", "raiva"],
+        "answer": "A",
+        "tags": ["local", "conversa"]
+    }
+]
+}

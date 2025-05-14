@@ -16,9 +16,16 @@ def createQuestion(question):
 
 def callApi(myfile, question, client, model):
     
-    response = client.models.generate_content(
-        model= model, contents=[myfile, question]
-    )
+    while(True):
+        try:
+            response = client.models.generate_content(
+                model= model, contents=[myfile, question]
+            )
+            break
+        except Exception as e:
+            print(f"Erro: {e}")
+            print("Tentando novamente...")
+            continue
 
     return (response.text)
 
@@ -27,7 +34,7 @@ def sendVideo(video_name, client):
     my_file = client.files.upload(file=f"videos/{video_name}.mp4")
     while(True):
         my_file = client.files.get(name=my_file.name)
-        if my_file.status == "ACTIVE":
+        if my_file.state == "ACTIVE":
             return my_file
 
 

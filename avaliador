@@ -1,0 +1,25 @@
+import json
+
+import utils
+
+responses = utils.loadResponses()
+json_file_path = "questions/questions.json"
+with open(json_file_path, "r", encoding="utf-8") as json_file:
+    json_data = json.load(json_file)
+
+corrects = 0
+total = 0
+for video in json_data:
+    index = 0
+    for question in json_data[video]:
+        question_id = question["id"]
+        correct_answer = question["answer"]
+        given_answer = responses[video][index]["response"]
+        total += 1
+        index += 1
+        if correct_answer == given_answer:
+            corrects += 1
+
+print(f"Total de perguntas: {total}")
+print(f"Total de respostas corretas: {corrects}")
+print(f"Porcentagem de acertos: {corrects/total*100:.2f}%")
