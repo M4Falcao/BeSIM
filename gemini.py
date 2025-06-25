@@ -127,27 +127,50 @@ def callApi(file, question_text, model, client):
 
     return response.text
 
+def loadUploadedVideoIds(file_path) -> dict:
+    """Carrega os IDs de vídeos já enviados para a API do Gemini."""
+    
+    print(f"Carregando IDs de vídeos do arquivo: {file_path}")
+    if not os.path.exists(file_path):
+        return {}
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        try:
+            return json.load(file)
+        except json.JSONDecodeError:
+            print(f"Erro ao decodificar o arquivo JSON: {file_path}. Retornando dicionário vazio.")
+            return {}
+        
+def saveUploadedVideoIds(ids: dict, file_path):
+    """Salva os IDs de vídeos enviados para a API do Gemini em um arquivo JSON."""
+    with open(file_path, "w", encoding="utf-8") as file:
+        json.dump(ids, file, ensure_ascii=False, indent=4)
+    print(f"IDs de vídeos salvos com sucesso em '{file_path}'.")
+
 def main():
     # Carrega variáveis do arquivo .env
     load_dotenv()
     api_key = os.getenv("API_GOOGLE")
     client = genai.Client(api_key=api_key)
     model = "gemini-1.5-pro"
+    
+    TABLE = "BeSimV5.xlsx"
+    ID_STORAGE_FILE = "log/uploaded_video_ids_gemini.json"
 
     # Carrega o arquivo JSON de perguntas
-    questions = utils.load_questions("BeSim V2.xlsx")
-    videos = utils.load_video_table("BeSim V2.xlsx")
+    questions = utils.load_questions(TABLE)
+    videos = utils.load_video_table(TABLE)
+    ids_gemini = loadUploadedVideoIds(ID_STORAGE_FILE)
 
     responses = None
     corretas = 0
     total = 0
     for video_id in videos:
-        video = videos[video_id]
-        print(video)
-        external_name = video["Obs"]
-        
-        media = get_video_by_id(external_name, client)
-        
+        external_name =  ids_gemini[str(video_id)] if str(video_id) in ids_gemini else None
+        print(f"Processando vídeo: {video_id}")
+
+        media = get_video_by_id(external_name, client) if external_name is not None else None
+
         if not media:
             path = f"downloads/videos/{str(int(video_id))}.mp4"
             if not os.path.exists(path):
@@ -157,6 +180,8 @@ def main():
             print(f"Enviando vídeo: {video_id}")
             media = upload_video(path, client)
             print(f"Vídeo enviado: {media.name}")
+            ids_gemini[video_id] = media.name
+            
         else:
             print(f"Vídeo encontrado: {media.name}")
             
@@ -182,21 +207,13 @@ def main():
 
     # Save the updated responses back to the file
     utils.saveResponses(responses, f"responses/responses_{model}.xlsx")
+    saveUploadedVideoIds(ids_gemini, ID_STORAGE_FILE)
     print(f"Total de perguntas: {total}")
     print(f"Total de respostas corretas: {corretas}")
     print(f"Porcentagem de acertos: {corretas/total*100:.2f}%")
     
-def test():
-    load_dotenv()
-    api_key = os.getenv("API_GOOGLE")
-    client = genai.Client(api_key=api_key)
-    model = "gemini-1.5-pro"
-    file_id = "files/3nij92m9kxwc"
-    files = list_all_videos(client)
-    print("Concluído com sucesso!")
-    
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", filename="gemini.log", filemode="w")
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", filename="log/gemini.log", filemode="w")
     try:
         main()
     except KeyboardInterrupt:

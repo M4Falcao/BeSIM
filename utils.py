@@ -57,7 +57,7 @@ def load_video_table(video_file="BeSim V2.xlsx", sheet_name='videos') -> dict:
 def createQuestion(question):
     options_index = ["A", "B", "C", "D"]
     question_text = ""
-    question_text += (f"Selecione a melhor resposta para a seguinte questão de múltipla escolha com base no vídeo. Responda apenas com a letra (A, B, C ou D) da opção correta.\n")
+    question_text += (f"Selecione a melhor resposta para a seguinte questão de múltipla escolha com base no vídeo. Sua resposta deve conter apenas um caractere com *somente* com a letra ('A', 'B', 'C' ou 'D') da opção correta.\n")
     question_text += (f"Questão: {question['question']}\n")
     question_text += (f"A melhor resposta é:\n")
     for x in range(len(question['options'])):
@@ -136,4 +136,4 @@ def process_response(string: str) -> str:
         print(f"Erro ao processar a string: {e}")
         return string
 
-    
+
