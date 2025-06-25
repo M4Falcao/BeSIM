@@ -74,14 +74,11 @@ def get_video_by_id(file_id: str, client):
     try:
         file = client.files.get(name=file_id)
         return file
-    except genai.NotFoundError:
-        logging.error(f"Arquivo com ID '{file_id}' não encontrado na API do Gemini.")
-        return None
     except Exception as e:
         logging.error(f"Ocorreu um erro ao buscar o arquivo: {e}")
 
 
-def list_all_videos(client):
+def list_all_videos(client) -> list[types.File] | None:
     """Lista todos os arquivos de vídeo atualmente no serviço de arquivos do Gemini."""
     logging.info("Listando todos os arquivos na API do Gemini...")
     try:
@@ -96,9 +93,10 @@ def list_all_videos(client):
         print(f"Encontrados {len(files)} arquivos:")
         for file in files:
             print(
-                f"  - ID: {file.name}, Nome: {file.display_name}, Estado: {file.state.name}"
+                f"  - ID: {file.name}, Nome: {file.display_name}, Estado: {file.state.name} , Created: {file.uri}"
             )
         print("-" * 50)
+        return files
     except Exception as e:
         logging.error(f"Ocorreu um erro ao listar os arquivos: {e}")
 
@@ -129,61 +127,81 @@ def callApi(file, question_text, model, client):
 
     return response.text
 
+def main():
+    # Carrega variáveis do arquivo .env
+    load_dotenv()
+    api_key = os.getenv("API_GOOGLE")
+    client = genai.Client(api_key=api_key)
+    model = "gemini-1.5-pro"
 
-# Carrega variáveis do arquivo .env
-load_dotenv()
-api_key = os.getenv("API_GOOGLE")
-client = genai.Client(api_key=api_key)
-model = "gemini-2.0-flash"
+    # Carrega o arquivo JSON de perguntas
+    questions = utils.load_questions("BeSim V2.xlsx")
+    videos = utils.load_video_table("BeSim V2.xlsx")
 
-# Carrega o arquivo JSON de perguntas
-questions = utils.load_questions("BeSim V2.xlsx")
-videos = utils.load_video_table("BeSim V2.xlsx")
-
-responses = None
-corretas = 0
-total = 0
-for video_id in videos:
-    video = videos[video_id]
-    print(video)
-    external_name = video["Obs"]
-    
-    media = get_video_by_id(external_name, client)
-    
-    if not media:
-        path = f"downloads/videos/{str(int(video_id))}.mp4"
-        if not os.path.exists(path):
-            print(f"Arquivo de vídeo não encontrado: {path}. Pulando...")
-            continue
-
-        print(f"Enviando vídeo: {video_id}")
-        media = upload_video(path, client)
-        print(f"Vídeo enviado: {media.name}")
-    else:
-        print(f"Vídeo encontrado: {media.name}")
+    responses = None
+    corretas = 0
+    total = 0
+    for video_id in videos:
+        video = videos[video_id]
+        print(video)
+        external_name = video["Obs"]
         
+        media = get_video_by_id(external_name, client)
+        
+        if not media:
+            path = f"downloads/videos/{str(int(video_id))}.mp4"
+            if not os.path.exists(path):
+                print(f"Arquivo de vídeo não encontrado: {path}. Pulando...")
+                continue
 
-    for question_id in questions[video_id]:
-        question = questions[video_id][question_id]
-        correct = False
-        total += 1
-        question_text = utils.createQuestion(question)
-        print(f"Enviando pergunta: \n{question_text}")
-        response = callApi(media, question_text, model, client)
-        response = utils.process_response(response)
-        print()
-        print(f"Resposta: {response}")
-        print()
-        if response == question["answer"]:
-            correct = True
-            print("Resposta correta")
-            corretas += 1
+            print(f"Enviando vídeo: {video_id}")
+            media = upload_video(path, client)
+            print(f"Vídeo enviado: {media.name}")
+        else:
+            print(f"Vídeo encontrado: {media.name}")
+            
 
-        # Save the response for the current question
-        responses = utils.addResponses(question_id, response, correct, responses)
+        for question_id in questions[video_id]:
+            question = questions[video_id][question_id]
+            correct = False
+            total += 1
+            question_text = utils.createQuestion(question)
+            print(f"Enviando pergunta: \n{question_text}")
+            response = callApi(media, question_text, model, client)
+            response = utils.process_response(response)
+            print()
+            print(f"Resposta: {response}")
+            print()
+            if response == question["answer"]:
+                correct = True
+                print("Resposta correta")
+                corretas += 1
 
-# Save the updated responses back to the file
-utils.saveResponses(responses, f"responses/responses_{model}.xlsx")
-print(f"Total de perguntas: {total}")
-print(f"Total de respostas corretas: {corretas}")
-print(f"Porcentagem de acertos: {corretas/total*100:.2f}%")
+            # Save the response for the current question
+            responses = utils.addResponses(question_id, response, correct, responses)
+
+    # Save the updated responses back to the file
+    utils.saveResponses(responses, f"responses/responses_{model}.xlsx")
+    print(f"Total de perguntas: {total}")
+    print(f"Total de respostas corretas: {corretas}")
+    print(f"Porcentagem de acertos: {corretas/total*100:.2f}%")
+    
+def test():
+    load_dotenv()
+    api_key = os.getenv("API_GOOGLE")
+    client = genai.Client(api_key=api_key)
+    model = "gemini-1.5-pro"
+    file_id = "files/3nij92m9kxwc"
+    files = list_all_videos(client)
+    print("Concluído com sucesso!")
+    
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", filename="gemini.log", filemode="w")
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nExecução interrompida pelo usuário.")
+        sys.exit(0)
+    except Exception as e:
+        logging.error(f"Ocorreu um erro inesperado: {e}")
+        sys.exit(1)

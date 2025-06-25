@@ -5,6 +5,7 @@ openpyxl>=3.1.0
 yt-dlp>=2024.04.09
 genai>=0.1.0
 google-cloud-aiplatform
+openai opencv-python python-dotenv
 
 # FFmpeg é necessário para cortar e mesclar vídeos:
 # Instale via conda: conda install -c conda-forge ffmpeg
