@@ -1,4 +1,5 @@
 # pip install git+https://github.com/LLaVA-VL/LLaVA-NeXT.git
+import llava
 from llava.model.builder import load_pretrained_model
 from llava.mm_utils import get_model_name_from_path, process_images, tokenizer_image_token
 from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN, IGNORE_INDEX
@@ -36,7 +37,7 @@ device = "cuda"
 device_map = "auto"
 tokenizer, model, image_processor, max_length = load_pretrained_model(pretrained, None, model_name, torch_dtype="bfloat16", device_map=device_map)  # Add any other thing you want to pass in llava_model_args
 model.eval()
-video_path = "XXXX"
+video_path = "downloads/videos/27.mp4"
 max_frames_num = "64"
 video,frame_time,video_time = load_video(video_path, max_frames_num, 1, force_sample=True)
 video = image_processor.preprocess(video, return_tensors="pt")["pixel_values"].cuda().bfloat16()

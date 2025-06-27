@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import unicodedata
 
+
 def load_questions(questions_file="BeSim V2.xlsx") -> dict:
     nome_da_aba = 'perguntas'
     id_column = 'ID'

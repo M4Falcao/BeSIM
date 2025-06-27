@@ -1,131 +1,81 @@
-# video_analyzer_gpt.py
-# Um script simples para analisar um vídeo local usando o modelo GPT-4o da OpenAI.
+from IPython.display import display, Image, Audio
 
-import cv2
+import cv2  # Usamos OpenCV para ler o vídeo
 import base64
-import os
 import time
 from openai import OpenAI
-from dotenv import load_dotenv
+import os
+import numpy as np # <<< ADICIONADO: Necessário para calcular os índices espaçados
 
-# --- CONFIGURAÇÃO ---
+# --- Configuração ---
+# <<< NOVO: Defina aqui a quantidade máxima de frames que você deseja enviar
+MAX_FRAMES = 200
+VIDEO_PATH = "downloads/videos/27.mp4"
 
-# Carrega as variáveis de ambiente (onde sua chave da API está)
-load_dotenv()
+# --- Inicialização do Cliente OpenAI ---
+# Carrega a chave da API a partir de uma variável de ambiente
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "SUA_CHAVE_API_AQUI"))
 
-# Intervalo entre os frames a serem capturados (em milissegundos).
-# 1000ms = 1 frame por segundo. Aumente para vídeos longos para economizar custos.
-FRAME_INTERVAL_MS = 1000
+# --- Leitura e Processamento do Vídeo ---
+video = cv2.VideoCapture(VIDEO_PATH)
 
-# --- FUNÇÕES ---
+base64Frames = []
+while video.isOpened():
+    success, frame = video.read()
+    if not success:
+        break
+    _, buffer = cv2.imencode(".jpg", frame)
+    base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
 
-def extract_frames_from_video(video_path: str) -> list[str]:
-    """
-    Extrai frames de um vídeo em intervalos regulares e os codifica em base64.
-    
-    Args:
-        video_path: O caminho para o arquivo de vídeo local.
+video.release()
+total_frames_lidos = len(base64Frames)
+print(f"{total_frames_lidos} frames lidos do vídeo.")
 
-    Returns:
-        Uma lista de strings, onde cada string é um frame codificado em base64.
-    """
-    if not os.path.exists(video_path):
-        raise FileNotFoundError(f"Vídeo não encontrado no caminho: {video_path}")
+# --- Seleção dos Frames para Envio ---
+# <<< LÓGICA MODIFICADA: Seleciona os frames de forma inteligente
+if total_frames_lidos > MAX_FRAMES:
+    # Se o vídeo tem mais frames que o nosso limite, selecionamos MAX_FRAMES
+    # de forma espaçada para representar o vídeo todo.
+    print(f"O vídeo tem mais de {MAX_FRAMES} frames. Selecionando uma amostra espaçada...")
+    indices = np.linspace(0, total_frames_lidos - 1, MAX_FRAMES, dtype=int)
+    frames_para_enviar = [base64Frames[i] for i in indices]
+else:
+    # Se o vídeo tem menos frames que o limite, enviamos todos.
+    print(f"O vídeo tem {total_frames_lidos} frames, enviando todos.")
+    frames_para_enviar = base64Frames
 
-    logging.info(f"Iniciando extração de frames do vídeo: {video_path}")
-    
-    video_capture = cv2.VideoCapture(video_path)
-    base64_frames = []
-    last_captured_time = 0
+print(f"Enviando {len(frames_para_enviar)} frames para a análise.")
 
-    while video_capture.isOpened():
-        success, frame = video_capture.read()
-        if not success:
-            break
+# --- Chamada para a API da OpenAI ---
+# NOTA: A estrutura da sua chamada de API parece ser de uma versão mais antiga ou customizada.
+# A estrutura abaixo foi adaptada para a versão mais comum da biblioteca 'openai' (v1.x+).
+# Se a sua estrutura original funciona, sinta-se à vontade para usá-la, apenas trocando
+# 'base64Frames[0::60]' por 'frames_para_enviar'.
 
-        current_time_ms = video_capture.get(cv2.CAP_PROP_POS_MSEC)
-        
-        if current_time_ms - last_captured_time >= FRAME_INTERVAL_MS:
-            last_captured_time = current_time_ms
-            
-            # Codifica o frame para JPEG em memória
-            _, buffer = cv2.imencode(".jpg", frame)
-            
-            # Converte para base64
-            base64_frame = base64.b64encode(buffer).decode("utf-8")
-            base64_frames.append(base64_frame)
-            
-    video_capture.release()
-    logging.info(f"Extração concluída. {len(base64_frames)} frames capturados.")
-    return base64_frames
+# Construindo a lista de mensagens para a API
+response = client.responses.create(
+    model="gpt-4.1-mini",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": (
+                        "These are frames from a video that I want to upload. Generate a compelling description that I can upload along with the video."
+                    )
+                },
+                *[
+                    {
+                        "type": "input_image",
+                        "image_url": f"data:image/jpeg;base64,{frame}"
+                    }
+                    for frame in base64Frames[0::60]
+                ]
+            ]
+        }
+    ],
+)
 
-
-def analyze_video_with_gpt4o(base64_frames: list[str], prompt_text: str) -> str:
-    """
-    Envia os frames de um vídeo e uma pergunta para o modelo GPT-4o.
-    
-    Args:
-        base64_frames: Uma lista de frames codificados em base64.
-        prompt_text: A pergunta ou comando para a análise.
-        
-    Returns:
-        A resposta em texto gerada pelo modelo.
-    """
-    try:
-        client = OpenAI() # O cliente usa a chave do .env automaticamente
-
-        # Monta a requisição para a API
-        # O primeiro item da lista de conteúdo é o texto, seguido pelas imagens
-        prompt_messages = [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt_text},
-                    *map(lambda frame: {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{frame}", "detail": "low"}}, base64_frames),
-                ],
-            },
-        ]
-
-        logging.info("Enviando requisição para a API do GPT-4o...")
-        
-        response = client.chat.completions.create(
-            model="gpt-4o-mini", # O modelo multimodal mais recente
-            messages=prompt_messages,
-        )
-        
-        return response.choices[0].message.content
-
-    except Exception as e:
-        logging.error(f"Ocorreu um erro ao chamar a API da OpenAI: {e}")
-        return "Erro ao processar a análise do vídeo."
-
-
-# --- EXECUÇÃO PRINCIPAL ---
-if __name__ == "__main__":
-    import logging
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - [%(levelname)s] - %(message)s', filename='gpt.log')
-
-    # --- EDITE ESTAS VARIÁVEIS ---
-    VIDEO_PATH = "downloads/videos/3.mp4"  # Coloque o nome do seu arquivo de vídeo aqui
-    USER_PROMPT = "O que fez com que uma musica fosse cantada ao final da interação?"
-    # -----------------------------
-
-    # Passo 1: Extrair os frames do vídeo
-    try:
-        frames = extract_frames_from_video(VIDEO_PATH)
-
-        if not frames:
-            logging.warning("Nenhum frame foi extraído. Verifique o arquivo de vídeo e o intervalo.")
-        else:
-            # Passo 2: Enviar os frames para análise
-            analysis_result = analyze_video_with_gpt4o(frames, USER_PROMPT)
-            
-            # Passo 3: Imprimir o resultado
-            print("\n" + "="*20 + " ANÁLISE DO VÍDEO " + "="*20)
-            print(analysis_result)
-            print("="*62)
-
-    except FileNotFoundError as e:
-        logging.error(e)
-    except Exception as e:
-        logging.error(f"Ocorreu um erro inesperado no processo: {e}")
+print("\n--- Descrição Gerada ---")
+print(response.choices[0].message.content)
