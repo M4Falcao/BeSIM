@@ -1,71 +1,71 @@
-# BeSIM: Um Benchmark para Avaliação de Interações Sociais por MLLMs
+# BeSIM: A Benchmark for Evaluating the Interpretation of Social Interactions in Brazil Using Multimodal Large Language Models
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Código e dados disponíveis em: https://github.com/M4Falcao/BeSIM**
+**Code and data available at: https://github.com/M4Falcao/BeSIM**
 
-Este repositório contém o código e os dados do **BeSIM**, um benchmark desenvolvido para avaliar a competência de Modelos Multimodais de Linguagem em Larga Escala (MLLMs) na interpretação de interações sociais entre brasileiros.
+This repository contains the code and data for **BeSIM**, a benchmark developed to evaluate the competence of Large Multimodal Language Models (MLLMs) in interpreting social interactions among Brazilians.
 
-## Sobre o Projeto
+## About the Project
 
-A rápida evolução dos MLLMs tem ampliado as possibilidades de compreensão automática de cenários complexos do mundo real, porém sua capacidade de interpretar interações sociais por meio de vídeos ainda é pouco explorada.
+The rapid evolution of MLLMs has expanded the possibilities for automatically understanding complex real-world scenarios, yet their ability to interpret social interactions through video is still underexplored.
 
-O BeSIM (Benchmark for Social Interaction in Multimodal models) busca preencher essa lacuna, fornecendo um conjunto de dados e uma metodologia de avaliação focada em interações sociais no contexto brasileiro. O benchmark é fundamentado na taxonomia APRACE para categorizar os elementos centrais da interação social.
+BeSIM (Benchmark for Social Interaction in Multimodal models) aims to fill this gap by providing a dataset and an evaluation methodology focused on social interactions within the Brazilian context. The benchmark is based on the APRACE taxonomy to categorize the core elements of social interaction.
 
-## Metodologia
+## Methodology
 
-### Coleta e Estrutura do Dataset
+### Dataset Collection and Structure
 
-O dataset do BeSIM é composto por 45 vídeos coletados da plataforma YouTube, que originaram 225 questões de múltipla escolha. Os vídeos foram selecionados para representar uma ampla diversidade de contextos da realidade brasileira, como humor, entrevistas e eventos esportivos, a fim de capturar uma variedade de dinâmicas interacionais.
+The BeSIM dataset consists of 45 videos collected from the YouTube platform, which generated 225 multiple-choice questions. The videos were selected to represent a wide diversity of contexts from the Brazilian reality, such as humor, interviews, and sporting events, in order to capture a variety of interactional dynamics.
 
-**Critérios de seleção dos vídeos:**
-* Interações protagonizadas por brasileiros.
-* Publicados ou registrados nos últimos 10 anos.
-* Com duração máxima de 600 segundos.
-* Provenientes exclusivamente da plataforma YouTube.
+**Video selection criteria:**
+* Interactions featuring Brazilians.
+* Published or recorded within the last 10 years.
+* With a maximum duration of 600 seconds.
+* Sourced exclusively from the YouTube platform.
 
-Os vídeos foram organizados em cinco categorias principais: conhecimento, cinema e televisão, competição esportiva, performance artística e registro de vida.
+The videos were organized into five main categories: knowledge, cinema and television, sports competition, artistic performance, and life logging.
 
-### Formulação das Questões
+### Question Formulation
 
-Seguindo a metodologia do Video-MME, foram elaboradas questões de múltipla escolha com quatro alternativas, sendo apenas uma correta. As perguntas foram criadas para avaliar a capacidade do modelo em:
+Following the Video-MME methodology, multiple-choice questions were created with four alternatives, only one of which is correct. The questions were designed to assess the model's ability to:
 
-* Reconhecer e interpretar emoções a partir de múltiplas pistas verbais e não verbais.
-* Compreender as relações interpessoais dos participantes.
-* Identificar as atividades realizadas e inferir as intenções subjacentes.
-* Interpretar o ambiente no qual a interação ocorre.
-* Avaliar a forma como a interação se deu, definindo sua valência e coerência.
-* Apresentar raciocínio temporal a respeito da evolução da interação.
+* Recognize and interpret emotions from multiple verbal and non-verbal cues.
+* Understand the interpersonal relationships of the participants.
+* Identify the activities being performed and infer the underlying intentions.
+* Interpret the environment in which the interaction occurs.
+* Evaluate how the interaction unfolded, defining its valence and coherence.
+* Demonstrate temporal reasoning regarding the evolution of the interaction.
 
-As questões são classificadas de acordo com as categorias da taxonomia APRACE adaptada (Agentes, Relação, Atividade, Contexto e Avaliação). Para garantir a objetividade, as respostas devem ser obtidas exclusivamente a partir dos dados apresentados no vídeo, sem referência a conhecimento externo.
+The questions are classified according to the adapted APRACE taxonomy categories (Agents, Relation, Activity, Context, and Evaluation). To ensure objectivity, the answers must be derived exclusively from the data presented in the video, without reference to external knowledge.
 
-## Resultados
+## Results
 
-Os modelos foram avaliados utilizando a acurácia como métrica principal. Os resultados demonstram que modelos como o **Gemini 2.5 Pro** superam seu desempenho em benchmarks generalistas, como o Video-MME, alcançando até **90% de acurácia** no BeSIM. Isso indica que os MLLMs apresentam grande potencial na interpretação de interações humanas quando avaliados adequadamente.
+The models were evaluated using accuracy as the primary metric. The results show that models like **Gemini 2.5 Pro** surpass their performance on generalist benchmarks, such as Video-MME, achieving up to **90% accuracy** on BeSIM. This indicates that MLLMs have great potential for interpreting human interactions when evaluated appropriately.
 
-### Tabela de Acurácia
+### Accuracy Table
 
-A tabela a seguir apresenta a acurácia dos modelos avaliados em cada categoria da taxonomia APRACE adaptada.
+The following table presents the accuracy of the evaluated models in each category of the adapted APRACE taxonomy.
 
-| Modelo | Agentes | Relação | Atividade | Contexto | Avaliação | **Média** |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| gemini-1.5-pro | 86.36% | 95,45% | 86,36% | 90,91% | 68,18% | **85,45%** |
-| gemini-2.5-pro | 90,91% | 90,91% | 95,45% | 90,91% | 81,82% | **90,00%** |
-| gemini-2.5-flash | 77,27% | 95.45% | 95,45% | 90,91% | 77,27% | **87,27%** |
-| LLaVA-Video-7B-Qwen2 8fr | 81,82% | 86,36% | 68,18% | 63,64% | 50,00% | **70,00%** |
-| **Média** | 84,09% | 92,05% | 86,36% | 84,09% | 69,32% | **83,18%** |
+| Model                       | Agents  | Relation | Activity | Context  | Evaluation | **Average** |
+| :-------------------------- | :-----: | :------: | :------: | :------: | :--------: | :---------: |
+| gemini-1.5-pro              | 86.36%  | 95.45%   | 86.36%   | 90.91%   | 68.18%     | **85.45%** |
+| gemini-2.5-pro              | 90.91%  | 90.91%   | 95.45%   | 90.91%   | 81.82%     | **90.00%** |
+| gemini-2.5-flash            | 77.27%  | 95.45%   | 95.45%   | 90.91%   | 77.27%     | **87.27%** |
+| LLaVA-Video-7B-Qwen2 8fr    | 81.82%  | 86.36%   | 68.18%   | 63.64%   | 50.00%     | **70.00%** |
+| **Average** | 84.09%  | 92.05%   | 86.36%   | 84.09%   | 69.32%     | **83.18%** |
 
-### Conclusões
+### Conclusions
 
-Apesar do bom desempenho geral, foi identificada uma queda significativa na acurácia em todos os modelos na tarefa de avaliar se a interação foi agradável ou não. Esse resultado aponta para uma limitação na interpretação da dimensão afetiva das interações, o que exige atenção, sobretudo em aplicações sensíveis, como a detecção de situações de violência ou assédio moral.
+Despite the good overall performance, a significant drop in accuracy was identified across all models in the task of evaluating whether an interaction was pleasant or not. This result points to a limitation in interpreting the affective dimension of interactions, which requires attention, especially in sensitive applications such as detecting situations of violence or harassment.
 
-## Citação
+## Citation
 
-Se você utilizar o BeSIM em sua pesquisa, por favor, cite nosso artigo.
+If you use BeSIM in your research, please cite our paper.
 
 ```bibtex
 @inproceedings{falcao2024mllms,
-  title={MLLMs e Interações Humanas: Construção e Avaliação de um Conjunto de Dados Brasileiro},
+  title={BeSIM: A Benchmark for Evaluating the Interpretation of Social Interactions in Brazil Using Multimodal Large Language Models},
   author={Falcão, Mateus Souza and dos Santos, Vitória Sofia Vieira and Simões, Francisco Paulo Magalhaes},
-  year={2024}
+  year={2025}
 }
