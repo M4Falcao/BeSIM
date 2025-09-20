@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Code and data available at: https://github.com/M4Falcao/BeSIM**
+**Data available at: [https://github.com/M4Falcao/BeSIM](https://github.com/M4Falcao/BeSIM/blob/main/BeSim.xlsx)**
 
 This repository contains the code and data for **BeSIM**, a benchmark developed to evaluate the competence of Large Multimodal Language Models (MLLMs) in interpreting social interactions among Brazilians.
 
